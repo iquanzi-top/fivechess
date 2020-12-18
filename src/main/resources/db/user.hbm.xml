@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate-mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="game.iquanzi.top.pojo.UserPojo" table="user" schema="main">
+        <id name="uid" type="integer">
+            <generator class="assigned" />
+        </id>
+        <!--<timestamp name="createTime" column="create_time"/>-->
+        <property name="userName" type="java.lang.String">
+            <column name="user_name" length="50" not-null="true"/>
+        </property>
+        <property name="nickName" column="nickname" type="java.lang.String" />
+        <property name="portrait" column="portrait" type="java.lang.String" length="300" />
+        <property name="token" column="user_token" type="java.lang.String" length="50" />
+        <property name="createTime" column="create_time" type="timestamp" not-null="true" />
+    </class>
+</hibernate-mapping>
