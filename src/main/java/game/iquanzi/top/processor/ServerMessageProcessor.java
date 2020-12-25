@@ -1,7 +1,6 @@
 package game.iquanzi.top.processor;
 
 import cn.hutool.json.JSONUtil;
-import game.iquanzi.top.MainController;
 import game.iquanzi.top.controller.LobbyController;
 import game.iquanzi.top.dto.LoginResultDto;
 import game.iquanzi.top.dto.OutDto;
@@ -13,7 +12,8 @@ import org.smartboot.socket.MessageProcessor;
 import org.smartboot.socket.StateMachineEnum;
 import org.smartboot.socket.transport.AioSession;
 
-import static game.iquanzi.top.dict.MessageTypeDict.*;
+import static game.iquanzi.top.dict.MessageTypeDict.Req.*;
+import static game.iquanzi.top.dict.MessageTypeDict.Resp.*;
 
 /**
  * 服务端消息处理<br/>
@@ -133,6 +133,9 @@ public class ServerMessageProcessor implements MessageProcessor<String> {
 
                     stage.hide();
                 });
+                break;
+            case ONLINE_USERS_RESP:
+                log.debug("在线用户数据：{}", msg);
                 break;
             default:
                 log.debug("不支持的消息");

@@ -2,11 +2,9 @@ package game.iquanzi.top;
 
 import cn.hutool.core.lang.Assert;
 import cn.hutool.crypto.SecureUtil;
-import game.iquanzi.top.dict.MessageTypeDict;
-import game.iquanzi.top.dto.LoginDto;
-import game.iquanzi.top.dto.OutDto;
 import game.iquanzi.top.processor.ServerMessageProcessor;
 import game.iquanzi.top.protocol.StringProtocol;
+import game.iquanzi.top.service.MessageService;
 import game.iquanzi.top.service.SessionService;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -21,7 +19,6 @@ import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
 import org.smartboot.socket.transport.AioQuickClient;
 import org.smartboot.socket.transport.AioSession;
-import org.smartboot.socket.transport.WriteBuffer;
 
 import java.io.IOException;
 import java.net.URL;
@@ -58,25 +55,7 @@ public class LoginController extends Application implements Initializable {
         String account = username.getText();
         String pwd = SecureUtil.md5(password.getText());
 
-        log.debug("用户认证，用户名：{}，密码：{}", account, pwd);
-        LoginDto loginDto = LoginDto.builder().p(pwd).u(account).build();
-
-        OutDto<LoginDto> out = new OutDto<>();
-        out.setD(loginDto);
-        out.setT(MessageTypeDict.LOGIN);
-
-        getChessSession().setUserName(account);
-        getChessSession().setPassword(pwd);
-
-        byte[] msgBody = out.toString().getBytes();
-        if (!getChessSession().getSession().isInvalid()) {
-            WriteBuffer writer = getChessSession().getSession().writeBuffer();
-            writer.writeInt(msgBody.length);
-            writer.write(msgBody);
-            writer.flush();
-        } else {
-            log.debug("连接会话失效");
-        }
+        MessageService.getInstance().userLogin(account, pwd);
     }
 
     @Override
@@ -96,15 +75,6 @@ public class LoginController extends Application implements Initializable {
             getChessSession().getClient().shutdown();
         });
 
-        /*Platform.runLater(() -> {
-            UserPojo user = new UserPojo();
-            user.setUid(222);
-            user.setUserName("王五");
-            user.setToken("token_222");
-            SQLiteUtil.addUser(user);
-            SQLiteUtil.getUserList();
-        });*/
-
         connServer(primaryStage);
     }
 
@@ -116,7 +86,7 @@ public class LoginController extends Application implements Initializable {
         log.debug("-----连接服务器-----");
         try {
             AioQuickClient<String> client = new AioQuickClient<>(
-                    "127.0.0.1",
+                    "192.168.18.38",
                     8080,
                     new StringProtocol(),
                     new ServerMessageProcessor(stage)

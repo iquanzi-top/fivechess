@@ -13,7 +13,7 @@
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="640.0" prefWidth="840.0" style="-fx-background-color: #ff950e;" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="game.iquanzi.top.MainController">
+<AnchorPane prefHeight="640.0" prefWidth="840.0" style="-fx-background-color: #ff950e;" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="game.iquanzi.top.controller.MainController">
     <children>
         <GridPane id="gridPane" gridLinesVisible="true" maxWidth="560.0" minWidth="560.0" prefHeight="560.0" prefWidth="560.0" AnchorPane.bottomAnchor="40.0" AnchorPane.leftAnchor="40.0" AnchorPane.topAnchor="40.0">
             <columnConstraints>

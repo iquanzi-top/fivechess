@@ -1,4 +1,4 @@
-package game.iquanzi.top;
+package game.iquanzi.top.controller;
 
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.NumberUtil;
