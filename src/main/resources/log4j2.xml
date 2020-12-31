@@ -85,6 +85,16 @@
     <Loggers>
         <!--过滤掉spring的一些无用的DEBUG信息-->
         <logger name="game.iquanzi.top" level="DEBUG"/>
+        <logger name="org.hibernate.cfg" level="OFF" />
+        <logger name="org.hibernate.type" level="OFF" />
+        <logger name="org.hibernate.id" level="OFF" />
+        <logger name="org.hibernate.engine" level="OFF" />
+        <logger name="org.hibernate.loader" level="OFF" />
+        <logger name="org.hibernate.boot" level="OFF" />
+        <logger name="org.hibernate.cache" level="OFF" />
+        <logger name="org.hibernate.annotations" level="OFF" />
+        <logger name="org.hibernate.secure" level="OFF" />
+        <logger name="org.hibernate.resource" level="OFF" />
         <!-- 配置日志的根节点 -->
         <!-- level="all" 只能够输出level级别是all及all以上的-->
         <root level="all">
