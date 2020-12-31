@@ -183,6 +183,8 @@ public class LobbyController extends Application {
             log.error("wonNums为空");
         }
 
+        MessageService.getInstance().sendTestMsg();
+
         /*MainController mainWin = new MainController();
         try {
             mainWin.showWindow();

@@ -2,8 +2,10 @@ package game.iquanzi.top.processor;
 
 import cn.hutool.json.JSONUtil;
 import game.iquanzi.top.controller.LobbyController;
+import game.iquanzi.top.dict.MessageTypeDict;
 import game.iquanzi.top.dto.LoginResultDto;
 import game.iquanzi.top.dto.OutDto;
+import game.iquanzi.top.pojo.UserPojo;
 import game.iquanzi.top.service.UserService;
 import javafx.application.Platform;
 import javafx.stage.Stage;
@@ -14,6 +16,7 @@ import org.smartboot.socket.transport.AioSession;
 
 import static game.iquanzi.top.dict.MessageTypeDict.Req.*;
 import static game.iquanzi.top.dict.MessageTypeDict.Resp.*;
+import static game.iquanzi.top.dict.MessageTypeDict.Test.TEST_RESP;
 
 /**
  * 服务端消息处理<br/>
@@ -65,6 +68,9 @@ public class ServerMessageProcessor implements MessageProcessor<String> {
                 break;
             case SESSION_CLOSED:
                 stateStr = "会话关闭成功";
+                // 此时将本地用户信息中的token置空
+                boolean logoutRs = UserService.logout();
+                log.debug("用户退出操作：{}", logoutRs ? "成功" : "失败");
                 break;
             case INPUT_EXCEPTION:
                 stateStr = "读操作异常";
@@ -98,9 +104,9 @@ public class ServerMessageProcessor implements MessageProcessor<String> {
      * @param msg 消息
      */
     private void msgProcess(Stage stage, AioSession session, String msg) {
+        log.info("数据：{}", msg);
         OutDto dto = JSONUtil.toBean(msg, OutDto.class);
         int t = dto.getT();
-        log.info("数据：{}", dto.toString());
         switch (t) {
             case LOGIN:
                 break;
@@ -136,6 +142,9 @@ public class ServerMessageProcessor implements MessageProcessor<String> {
                 break;
             case ONLINE_USERS_RESP:
                 log.debug("在线用户数据：{}", msg);
+                break;
+            case TEST_RESP:
+                log.debug("收到测试响应消息：{}", msg);
                 break;
             default:
                 log.debug("不支持的消息");

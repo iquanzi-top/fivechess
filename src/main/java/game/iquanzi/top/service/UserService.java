@@ -1,9 +1,13 @@
 package game.iquanzi.top.service;
 
+import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.collection.ListUtil;
 import game.iquanzi.top.dto.LoginResultDto;
 import game.iquanzi.top.pojo.UserPojo;
 import game.iquanzi.top.util.HibernateUtil;
+import lombok.extern.slf4j.Slf4j;
 
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -13,6 +17,7 @@ import java.util.Objects;
  * @date 2020/12/15
  * @since JDK 1.8
  */
+@Slf4j
 public class UserService {
     /**
      * 本地保存用户信息
@@ -38,9 +43,23 @@ public class UserService {
         return HibernateUtil.queryOne(UserPojo.class, hql, null);
     }
 
+    /**
+     * 用户退出
+     * @return true：成功；false：失败
+     */
+    public static boolean logout() {
+        UserPojo userPojo = curUser();
+        userPojo.setToken("");
+        return HibernateUtil.update(userPojo);
+    }
+
     private static UserPojo findUser(int userId) {
         String hql = "from UserPojo where uid=?0";
-        return HibernateUtil.queryOne(UserPojo.class, hql, new Object[]{userId});
+        List<UserPojo> list = HibernateUtil.queryList(UserPojo.class, hql, new Object[]{userId});
+        list.forEach(p -> {
+            log.debug("用户信息：{}", p.toString());
+        });
+        return CollectionUtil.isEmpty(list) ? null : list.get(0);
     }
 
     private static UserPojo dto2pojo(LoginResultDto dto) {

@@ -1,5 +1,6 @@
 package game.iquanzi.top.service;
 
+import cn.hutool.core.date.DateUtil;
 import game.iquanzi.top.dict.MessageTypeDict;
 import game.iquanzi.top.dto.LoginDto;
 import game.iquanzi.top.dto.OutDto;
@@ -8,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.smartboot.socket.transport.WriteBuffer;
 
 import java.io.IOException;
+import java.text.MessageFormat;
 
 import static game.iquanzi.top.dict.MessageTypeDict.Req.ONLINE_USERS;
 
@@ -37,6 +39,17 @@ public class MessageService {
 
     public static MessageService getInstance() {
         return MessageServiceHolder.instance;
+    }
+
+    /**
+     * 发送测试消息到服务器
+     */
+    public void sendTestMsg() {
+        String msg = MessageFormat.format("当前时间：{0}", DateUtil.now());
+        OutDto<String> out = new OutDto<>();
+        out.setD(msg);
+        out.setT(MessageTypeDict.Test.TEST);
+        sendMsg2Server(out);
     }
 
     /**
