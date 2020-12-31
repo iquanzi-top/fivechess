@@ -8,13 +8,13 @@
         <!-- 数据库驱动 -->
         <property name="hibernate.connection.driver_class">org.sqlite.JDBC</property>
         <!-- 数据库连接URL -->
-        <property name="hibernate.connection.url">jdbc:sqlite:src/main/resources/db/fivechess.db</property>
+        <property name="hibernate.connection.url">jdbc:sqlite::resource:fivechess.db</property>
         <!-- 格式化SQL -->
         <property name="hibernate.format_sql">true</property>
         <!-- 显示SQL -->
         <property name="hibernate.show_sql">true</property>
         <!-- SessionFactory 创建时是否根据映射文件自动验证表结构或自动创建、自动更新数据库表结构 -->
-        <!--<property name="hbm2ddl.auto">create</property>-->
+<!--         <property name="hibernate.hbm2ddl.auto">update</property>-->
         <!-- 映射文件 -->
         <mapping resource="db/user.hbm.xml" />
     </session-factory>

@@ -61,7 +61,7 @@ public class SQLiteUtil {
             .append(");");
 
     private static String SERVER_PATH = Thread.currentThread().getContextClassLoader().getResource("").getPath().substring(1);
-    private static String DB_PATH = SERVER_PATH + "/db/fivechess.db";
+    private static String DB_PATH = SERVER_PATH + "/fivechess.db";
     private static Connection connection;
     private static Statement statement;
 

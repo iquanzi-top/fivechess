@@ -13,7 +13,7 @@ import java.util.List;
  * Hibernate工具类<br/>
  * @author Mr.Z
  * @version 1.0
- * @createDate 2020/12/10
+ * @date 2020/12/10
  * @since JDK 1.8
  */
 @Slf4j
@@ -28,6 +28,8 @@ public class HibernateUtil {
         try {
             // 读取配置文件
             Configuration cfg = new Configuration().configure("hibernate.cfg.xml");
+            // 实例化服务登记
+            // StandardServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder().applySettings(cfg.getProperties()).build();
             // 获取会话工厂
             sessionFactory = cfg.buildSessionFactory();
         } catch (Exception e) {

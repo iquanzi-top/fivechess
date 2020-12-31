@@ -67,10 +67,12 @@ public class SQLiteDialect extends Dialect {
         return "select last_insert_rowid()";
     }
 
+    @Override
     public boolean supportsLimit() {
         return true;
     }
 
+    @Override
     public String getLimitString(String query, boolean hasOffset) {
         return new StringBuffer(query.length() + 20).append(query).append(hasOffset ? " limit ? offset ?" : " limit ?")
                 .toString();
@@ -96,6 +98,11 @@ public class SQLiteDialect extends Dialect {
     @Override
     public boolean isCurrentTimestampSelectStringCallable() {
         return false;
+    }
+
+    @Override
+    public String getCurrentSchemaCommand() {
+        return "pragma database_list";
     }
 
     @Override
