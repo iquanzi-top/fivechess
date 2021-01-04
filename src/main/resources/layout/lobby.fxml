@@ -22,8 +22,9 @@
                 <RowConstraints minHeight="200.0" prefHeight="200.0" vgrow="SOMETIMES" />
                 <RowConstraints minHeight="200.0" prefHeight="200.0" vgrow="SOMETIMES" />
             </rowConstraints>
+            <!--
             <children>
-                <FlowPane>
+                <FlowPane GridPane.columnIndex="0" GridPane.rowIndex="0">
                     <children>
                         <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
                             <image>
@@ -33,7 +34,7 @@
                         <Label alignment="CENTER" prefHeight="50.0" prefWidth="200.0" text="用户李四的信息" textAlignment="CENTER" />
                     </children>
                 </FlowPane>
-                <FlowPane GridPane.columnIndex="1">
+                <FlowPane GridPane.columnIndex="1" GridPane.rowIndex="0">
                     <children>
                         <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
                             <image>
@@ -43,7 +44,7 @@
                         <Label alignment="CENTER" prefHeight="50.0" prefWidth="200.0" text="用户李四的信息" textAlignment="CENTER" />
                     </children>
                 </FlowPane>
-                <FlowPane GridPane.columnIndex="2">
+                <FlowPane GridPane.columnIndex="2" GridPane.rowIndex="0">
                     <children>
                         <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
                             <image>
@@ -74,6 +75,7 @@
                     </children>
                 </FlowPane>
             </children>
+            -->
         </GridPane>
         <VBox fx:id="peerPane" fillWidth="false" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="640.0" prefWidth="230.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="608.0" AnchorPane.rightAnchor="3.0" AnchorPane.topAnchor="20.0">
             <children>

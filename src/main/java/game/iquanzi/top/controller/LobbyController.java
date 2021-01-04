@@ -8,23 +8,14 @@ import game.iquanzi.top.service.SessionService;
 import javafx.application.Application;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TitledPane;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
 
@@ -41,12 +32,7 @@ import static game.iquanzi.top.config.R.Lobby.*;
  */
 @Slf4j
 public class LobbyController extends Application {
-    private static Stage stage = new Stage();
-
     private SessionService chessSession;
-
-    @FXML
-    private GridPane usersPane;
 
     @FXML
     private Label totalNums;
@@ -59,7 +45,7 @@ public class LobbyController extends Application {
      * 显示窗口
      * @throws Exception 异常
      */
-    public void showWindow() throws Exception {
+    public void showWindow(final Stage stage) throws Exception {
         start(stage);
     }
 
@@ -102,8 +88,6 @@ public class LobbyController extends Application {
                         });
                     }
                 });
-            } else if (StrUtil.isNotBlank(childId) && childId.equalsIgnoreCase(ID_USERSPANE)) {
-                usersPane = (GridPane)child;
             }
         });
 
@@ -121,51 +105,7 @@ public class LobbyController extends Application {
     }
 
     private void loadData() {
-        // fixme 从服务器获取在线用户数据，并进行展示
         MessageService.getInstance().getOnlineUsers(0);
-
-        showPeersData();
-    }
-
-    /**
-     * 显示在线用户信息
-     */
-    private void showPeersData() {
-        FlowPane flowPane = new FlowPane();
-        flowPane.setUserData("数据内容");
-
-        ImageView imageView = new ImageView();
-        imageView.setFitHeight(145.0);
-        imageView.setFitWidth(200.0);
-        imageView.setPickOnBounds(true);
-        imageView.setPreserveRatio(true);
-        Image image = new Image("/images/t.jpeg", 200.0, 150.0, true, false);
-
-        imageView.setImage(image);
-
-        Label label = new Label();
-        label.setText("王五");
-        label.setPrefWidth(200.0);
-        label.setPrefHeight(50.0);
-        label.setAlignment(Pos.CENTER);
-        label.setTextAlignment(TextAlignment.CENTER);
-
-        flowPane.getChildren().add(imageView);
-        flowPane.getChildren().add(label);
-        Insets insets = new Insets(5, 0, 0, 0);
-        flowPane.setPadding(insets);
-        flowPane.setAlignment(Pos.CENTER);
-        flowPane.setId("f_01");
-
-        flowPane.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                FlowPane fp = (FlowPane) event.getSource();
-                log.debug("点击事件：{}", fp.getUserData());
-            }
-        });
-
-        usersPane.add(flowPane, 0, 2);
     }
 
     private SessionService getChessSession() {
@@ -184,13 +124,5 @@ public class LobbyController extends Application {
         }
 
         MessageService.getInstance().sendTestMsg();
-
-        /*MainController mainWin = new MainController();
-        try {
-            mainWin.showWindow();
-            stage.hide();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }*/
     }
 }

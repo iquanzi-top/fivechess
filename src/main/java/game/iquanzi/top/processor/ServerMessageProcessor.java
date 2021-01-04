@@ -1,18 +1,32 @@
 package game.iquanzi.top.processor;
 
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONUtil;
+import game.iquanzi.top.runnable.RefreshUsersPaneRunnable;
 import game.iquanzi.top.controller.LobbyController;
-import game.iquanzi.top.dict.MessageTypeDict;
 import game.iquanzi.top.dto.LoginResultDto;
 import game.iquanzi.top.dto.OutDto;
 import game.iquanzi.top.pojo.UserPojo;
 import game.iquanzi.top.service.UserService;
 import javafx.application.Platform;
+import javafx.event.EventHandler;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
 import org.smartboot.socket.MessageProcessor;
 import org.smartboot.socket.StateMachineEnum;
 import org.smartboot.socket.transport.AioSession;
+
+import java.util.List;
 
 import static game.iquanzi.top.dict.MessageTypeDict.Req.*;
 import static game.iquanzi.top.dict.MessageTypeDict.Resp.*;
@@ -122,32 +136,80 @@ public class ServerMessageProcessor implements MessageProcessor<String> {
 
                 // 跳转界面
                 Platform.runLater(() -> {
-                    /*MainController mainWin = new MainController();
-                    try {
-                        mainWin.showWindow();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        log.error("显示主窗口异常{}", e.getMessage());
-                    }*/
+                    stage.hide();
                     LobbyController lobby = new LobbyController();
                     try {
-                        lobby.showWindow();
+                        lobby.showWindow(stage);
                     } catch (Exception e) {
                         e.printStackTrace();
                         log.error("显示窗口异常{}", e.getMessage());
                     }
-
-                    stage.hide();
                 });
                 break;
             case ONLINE_USERS_RESP:
                 log.debug("在线用户数据：{}", msg);
+                GridPane pane = (GridPane) (stage.getScene().lookup("#usersPane"));
+                List<UserPojo> list = JSONUtil.toList((JSONArray) dto.getD(), UserPojo.class);
+                showPeersData(list, pane);
                 break;
             case TEST_RESP:
                 log.debug("收到测试响应消息：{}", msg);
                 break;
             default:
                 log.debug("不支持的消息");
+        }
+    }
+
+    /**
+     * 显示在线用户信息
+     */
+    private void showPeersData(List<UserPojo> users, GridPane usersPane) {
+        int rowIndex = 0, columnIndex = 0;
+        for (UserPojo user : users) {
+            FlowPane flowPane = new FlowPane();
+            flowPane.setUserData(JSONUtil.toJsonStr(user));
+
+            ImageView imageView = new ImageView();
+            imageView.setFitHeight(145.0);
+            imageView.setFitWidth(200.0);
+            imageView.setPickOnBounds(true);
+            imageView.setPreserveRatio(true);
+            Image image = new Image(user.getPortrait(), 200.0, 150.0, true, false);
+
+            imageView.setImage(image);
+
+            Label label = new Label();
+            label.setText(StrUtil.blankToDefault(user.getNickName(), user.getUserName()));
+            label.setPrefWidth(200.0);
+            label.setPrefHeight(50.0);
+            label.setAlignment(Pos.CENTER);
+            label.setTextAlignment(TextAlignment.CENTER);
+
+            flowPane.getChildren().add(imageView);
+            flowPane.getChildren().add(label);
+            Insets insets = new Insets(5, 0, 0, 0);
+            flowPane.setPadding(insets);
+            flowPane.setAlignment(Pos.CENTER);
+            flowPane.setId(String.valueOf(user.getUid()));
+
+            flowPane.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent event) {
+                    FlowPane fp = (FlowPane) event.getSource();
+                    log.debug("点击事件：{}", fp.getUserData());
+                }
+            });
+
+            Platform.runLater(new RefreshUsersPaneRunnable(flowPane, rowIndex, columnIndex, usersPane));
+
+            // usersPane.add(flowPane, columnIndex, rowIndex);
+            if (columnIndex < 2) {
+                columnIndex++;
+            }
+            if (columnIndex == 2) {
+                rowIndex++;
+                columnIndex = 0;
+            }
         }
     }
 }
