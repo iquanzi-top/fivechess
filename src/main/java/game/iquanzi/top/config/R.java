@@ -23,6 +23,9 @@ public class R {
         /**所有用户面板*/
         String ID_USERSPANE = "usersPane";
 
+        /**在线用户分页*/
+        String ID_PAGING = "paging";
+
         /**指定用户的信息面板*/
         String ID_PEERPANE = "peerpane";
 

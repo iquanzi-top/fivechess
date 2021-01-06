@@ -1,13 +1,14 @@
 package game.iquanzi.top.processor;
 
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONUtil;
-import game.iquanzi.top.runnable.RefreshUsersPaneRunnable;
 import game.iquanzi.top.controller.LobbyController;
 import game.iquanzi.top.dto.LoginResultDto;
+import game.iquanzi.top.dto.OnlineUserResultDto;
 import game.iquanzi.top.dto.OutDto;
+import game.iquanzi.top.pojo.OnlineUserPojo;
 import game.iquanzi.top.pojo.UserPojo;
+import game.iquanzi.top.runnable.RefreshUsersPaneRunnable;
 import game.iquanzi.top.service.UserService;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
@@ -28,8 +29,10 @@ import org.smartboot.socket.transport.AioSession;
 
 import java.util.List;
 
-import static game.iquanzi.top.dict.MessageTypeDict.Req.*;
-import static game.iquanzi.top.dict.MessageTypeDict.Resp.*;
+import static game.iquanzi.top.dict.MessageTypeDict.Req.CHESS_STEP;
+import static game.iquanzi.top.dict.MessageTypeDict.Req.LOGIN;
+import static game.iquanzi.top.dict.MessageTypeDict.Resp.LOGIN_RESP;
+import static game.iquanzi.top.dict.MessageTypeDict.Resp.ONLINE_USERS_RESP;
 import static game.iquanzi.top.dict.MessageTypeDict.Test.TEST_RESP;
 
 /**
@@ -42,6 +45,8 @@ import static game.iquanzi.top.dict.MessageTypeDict.Test.TEST_RESP;
 @Slf4j
 public class ServerMessageProcessor implements MessageProcessor<String> {
     private Stage stage;
+    /**每页用户数*/
+    private static final int PAGE_SIZE = 9;
 
     public ServerMessageProcessor(Stage stage) {
         this.stage = stage;
@@ -148,9 +153,11 @@ public class ServerMessageProcessor implements MessageProcessor<String> {
                 break;
             case ONLINE_USERS_RESP:
                 log.debug("在线用户数据：{}", msg);
-                GridPane pane = (GridPane) (stage.getScene().lookup("#usersPane"));
-                List<UserPojo> list = JSONUtil.toList((JSONArray) dto.getD(), UserPojo.class);
-                showPeersData(list, pane);
+                OnlineUserResultDto resultDto = JSONUtil.toBean(dto.getD().toString(), OnlineUserResultDto.class);
+                int curPageIndex = resultDto.getCurPageIndex();
+                GridPane pane = (GridPane) (stage.getScene().lookup("#usersPane_" + curPageIndex));
+
+                showPeersData(resultDto.getUsers(), pane);
                 break;
             case TEST_RESP:
                 log.debug("收到测试响应消息：{}", msg);
@@ -163,31 +170,33 @@ public class ServerMessageProcessor implements MessageProcessor<String> {
     /**
      * 显示在线用户信息
      */
-    private void showPeersData(List<UserPojo> users, GridPane usersPane) {
+    private void showPeersData(List<OnlineUserPojo> users, GridPane usersPane) {
         int rowIndex = 0, columnIndex = 0;
-        for (UserPojo user : users) {
+        for (OnlineUserPojo pojo : users) {
+            UserPojo user = pojo.getUser();
+
             FlowPane flowPane = new FlowPane();
-            flowPane.setUserData(JSONUtil.toJsonStr(user));
+            flowPane.setUserData(JSONUtil.toJsonStr(pojo));
 
             ImageView imageView = new ImageView();
-            imageView.setFitHeight(145.0);
-            imageView.setFitWidth(200.0);
+            imageView.setFitHeight(140.0);
+            imageView.setFitWidth(180.0);
             imageView.setPickOnBounds(true);
             imageView.setPreserveRatio(true);
-            Image image = new Image(user.getPortrait(), 200.0, 150.0, true, false);
+            Image image = new Image(user.getPortrait(), 180.0, 140.0, true, false);
 
             imageView.setImage(image);
 
             Label label = new Label();
             label.setText(StrUtil.blankToDefault(user.getNickName(), user.getUserName()));
-            label.setPrefWidth(200.0);
-            label.setPrefHeight(50.0);
+            label.setPrefWidth(180.0);
+            label.setPrefHeight(40.0);
             label.setAlignment(Pos.CENTER);
             label.setTextAlignment(TextAlignment.CENTER);
 
             flowPane.getChildren().add(imageView);
             flowPane.getChildren().add(label);
-            Insets insets = new Insets(5, 0, 0, 0);
+            Insets insets = new Insets(10, 0, 0, 0);
             flowPane.setPadding(insets);
             flowPane.setAlignment(Pos.CENTER);
             flowPane.setId(String.valueOf(user.getUid()));
@@ -202,7 +211,6 @@ public class ServerMessageProcessor implements MessageProcessor<String> {
 
             Platform.runLater(new RefreshUsersPaneRunnable(flowPane, rowIndex, columnIndex, usersPane));
 
-            // usersPane.add(flowPane, columnIndex, rowIndex);
             if (columnIndex < 2) {
                 columnIndex++;
             }
