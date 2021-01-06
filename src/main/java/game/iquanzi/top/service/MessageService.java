@@ -77,8 +77,6 @@ public class MessageService {
      * @param page 页吗
      */
     public void getOnlineUsers(int page) {
-        UserPojo userPojo = UserService.curUser();
-
         OutDto<Integer> out = new OutDto<>();
         out.setD(page);
         out.setT(ONLINE_USERS);
