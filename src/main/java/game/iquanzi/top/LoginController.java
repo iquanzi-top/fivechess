@@ -29,7 +29,6 @@ import java.util.ResourceBundle;
  *
  * @author Mr.Z
  * @version 1.0
- * @createDate 2020/10/29
  * @since JDK 1.8
  */
 @Slf4j
@@ -52,17 +51,30 @@ public class LoginController extends Application implements Initializable {
      * @throws Exception 异常
      */
     public void loginBtnClick(ActionEvent event) throws Exception {
-        String account = username.getText();
-        String pwd = SecureUtil.md5(password.getText());
+        log.debug("登录按钮事件：{}", event.getEventType().getName());
 
-        MessageService.getInstance().userLogin(account, pwd);
+        try {
+            String account = username.getText();
+            Assert.notEmpty(account);
+
+            String pwdSrc = password.getText();
+            Assert.notEmpty(pwdSrc);
+            String pwd = SecureUtil.md5(pwdSrc);
+
+            MessageService.getInstance().userLogin(account, pwd);
+        } catch (IllegalArgumentException e) {
+            throw new Exception("请输入账号或密码");
+        }
+
     }
 
     @Override
     public void start(Stage primaryStage) throws Exception {
         log.debug("启动五子棋窗口");
         URL resource = getClass().getClassLoader().getResource("layout/login.fxml");
+        assert resource != null;
         Assert.notNull(resource, "布局资源文件未找到");
+
         AnchorPane root = FXMLLoader.load(resource);
 
         primaryStage.setTitle("五子棋");
