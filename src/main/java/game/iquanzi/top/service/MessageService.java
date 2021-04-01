@@ -4,8 +4,8 @@ import cn.hutool.core.date.DateUtil;
 import game.iquanzi.top.dict.MessageTypeDict;
 import game.iquanzi.top.dto.LoginDto;
 import game.iquanzi.top.dto.OutDto;
-import game.iquanzi.top.pojo.UserPojo;
 import lombok.extern.slf4j.Slf4j;
+import org.smartboot.socket.transport.AioSession;
 import org.smartboot.socket.transport.WriteBuffer;
 
 import java.io.IOException;
@@ -19,7 +19,7 @@ import static game.iquanzi.top.dict.MessageTypeDict.Req.ONLINE_USERS;
  *
  * @author Mr.Z
  * @version 1.0
- * @createDate 2020-12-23
+ * @date 2020-12-23
  * @since JDK 1.8
  */
 @Slf4j
@@ -69,7 +69,6 @@ public class MessageService {
         chessSession.setPassword(pwd);
 
         sendMsg2Server(out);
-
     }
 
     /**
@@ -84,11 +83,18 @@ public class MessageService {
         sendMsg2Server(out);
     }
 
+    /**
+     * 发送消息到服务器
+     * @param out 响应对象
+     */
     private void sendMsg2Server(OutDto<?> out) {
         try {
+            AioSession session = chessSession.getSession();
+            assert session != null;
+
             byte[] msgBody = out.toString().getBytes();
-            if (!chessSession.getSession().isInvalid()) {
-                WriteBuffer writer = chessSession.getSession().writeBuffer();
+            if (!session.isInvalid()) {
+                WriteBuffer writer = session.writeBuffer();
                 writer.writeInt(msgBody.length);
                 writer.write(msgBody);
                 writer.flush();

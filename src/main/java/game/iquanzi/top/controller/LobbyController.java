@@ -65,42 +65,10 @@ public class LobbyController extends Application {
         childs.forEach(child -> {
             String childId = child.getId();
             log.debug("一级组件ID：{}", childId);
-            /*if (StrUtil.isNotBlank(childId) && childId.equalsIgnoreCase(ID_PEERPANE)) {
-                ObservableList<Node> childrens = ((VBox) child).getChildren();
-                childrens.forEach(c -> {
-                    String cId = c.getId();
-                    log.debug("二级组件ID：{}", cId);
-                    if (StrUtil.isNotBlank(cId) && cId.equalsIgnoreCase(ID_PEERINFOPANE)) {
-                        Node content = ((TitledPane) c).getContent();
-                        log.debug("三级组件ID：{}", content.getId());
-                        ObservableList<Node> chs = ((AnchorPane) content).getChildren();
-                        chs.forEach(ch -> {
-                            String id = ch.getId();
-                            if (StrUtil.isNotBlank(id) && id.equalsIgnoreCase(ID_TOTALNUMS)) {
-                                totalNums = ((Label)ch);
-                                log.debug("总数：{}", totalNums.getText());
-                            }
-
-                            if (StrUtil.isNotBlank(id) && id.equalsIgnoreCase(ID_WONNUMS)) {
-                                wonNums = ((Label)ch);
-                                log.debug("胜数：{}", wonNums.getText());
-                            }
-
-                            if (StrUtil.isNotBlank(id) && id.equalsIgnoreCase(ID_LOSTNUMS)) {
-                                lostNums = ((Label)ch);
-                                log.debug("败数：{}", lostNums.getText());
-                            }
-                        });
-                    }
-                });
-            } else */
             if (StrUtil.isNotBlank(childId) && childId.equalsIgnoreCase(ID_PAGING)) {
                 paging = (Pagination)child;
                 paging.setStyle("-fx-padding: 1, 0;");
-                paging.setPageFactory(pageIndex -> {
-                    // todo 创建表格，并返回
-                    return createGridPane(pageIndex);
-                });
+                paging.setPageFactory(this::createGridPane);
             }
         });
 
@@ -115,6 +83,11 @@ public class LobbyController extends Application {
         });
     }
 
+    /**
+     * 创建表格
+     * @param pageIndex 页码
+     * @return 表格面板
+     */
     private GridPane createGridPane(int pageIndex) {
         GridPane gridPane = new GridPane();
         gridPane.setGridLinesVisible(true);

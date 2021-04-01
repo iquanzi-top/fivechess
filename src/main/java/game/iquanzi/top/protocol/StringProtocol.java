@@ -9,7 +9,7 @@ import java.nio.ByteBuffer;
  * 消息解析协议<br/>
  * @author Mr.Z
  * @version 1.0
- * @createDate 2020/10/30
+ * @date 2020/10/30
  * @since JDK 1.8
  */
 public class StringProtocol implements Protocol<String> {
