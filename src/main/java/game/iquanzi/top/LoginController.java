@@ -33,6 +33,10 @@ import java.util.ResourceBundle;
  */
 @Slf4j
 public class LoginController extends Application implements Initializable {
+    /**
+     * 与服务器连接失败后尝试次数
+     */
+    private int test_time = 5;
     @FXML
     private TextField username;
     @FXML
@@ -95,29 +99,36 @@ public class LoginController extends Application implements Initializable {
      * @param stage 场景对象
      */
     private void connServer(Stage stage) {
-        log.debug("-----连接服务器-----");
-        try {
-            AioQuickClient<String> client = new AioQuickClient<>(
-                    "192.168.18.38",
-                    8080,
-                    new StringProtocol(),
-                    new ServerMessageProcessor(stage)
-            );
-            AioSession session = client.start();
-            log.debug("自己端ID：{}", session.getSessionID());
-
-            getChessSession().setClient(client);
-            getChessSession().setSession(session);
-        } catch (IOException e) {
-            log.error("服务器连接失败，5秒钟后自动重连", e);
-
+        if (test_time > 0) {
+            test_time--;
+            log.debug("-----连接服务器-----");
             try {
-                Thread.sleep(5000L);
-                connServer(stage);
-            } catch (InterruptedException e1) {
-                e1.printStackTrace();
+                //fixme 此处的服务器地址，后期需要进行替换
+                AioQuickClient<String> client = new AioQuickClient<>(
+                        "192.168.18.38",
+                        8080,
+                        new StringProtocol(),
+                        new ServerMessageProcessor(stage)
+                );
+                AioSession session = client.start();
+                log.debug("自己端ID：{}", session.getSessionID());
+
+                getChessSession().setClient(client);
+                getChessSession().setSession(session);
+
+                test_time = 5;
+            } catch (IOException e) {
+                log.error("服务器连接失败，5秒钟后自动重连", e);
+
+                try {
+                    Thread.sleep(5000L);
+                    connServer(stage);
+                } catch (InterruptedException e1) {
+                    log.error("服务器连接失败", e);
+                }
             }
         }
+
     }
 
     @Override
