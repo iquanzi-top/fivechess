@@ -8,18 +8,18 @@ import game.iquanzi.top.dto.OnlineUserResultDto;
 import game.iquanzi.top.dto.OutDto;
 import game.iquanzi.top.pojo.OnlineUserPojo;
 import game.iquanzi.top.pojo.UserPojo;
+import game.iquanzi.top.runnable.RefreshUserInfoPaneRunnable;
 import game.iquanzi.top.runnable.RefreshUsersPaneRunnable;
 import game.iquanzi.top.service.UserService;
 import javafx.application.Platform;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
@@ -157,7 +157,8 @@ public class ServerMessageProcessor implements MessageProcessor<String> {
                 int curPageIndex = resultDto.getCurPageIndex();
                 GridPane pane = (GridPane) (stage.getScene().lookup("#usersPane_" + curPageIndex));
 
-                showPeersData(resultDto.getUsers(), pane);
+                VBox vBox = (VBox) (stage.getScene().lookup("#peerPane"));
+                showPeersData(resultDto.getUsers(), pane, vBox);
                 break;
             case TEST_RESP:
                 log.debug("收到测试响应消息：{}", msg);
@@ -170,7 +171,7 @@ public class ServerMessageProcessor implements MessageProcessor<String> {
     /**
      * 显示在线用户信息
      */
-    private void showPeersData(List<OnlineUserPojo> users, GridPane usersPane) {
+    private void showPeersData(List<OnlineUserPojo> users, GridPane usersPane, VBox vBox) {
         int rowIndex = 0, columnIndex = 0;
         for (OnlineUserPojo pojo : users) {
             UserPojo user = pojo.getUser();
@@ -201,12 +202,11 @@ public class ServerMessageProcessor implements MessageProcessor<String> {
             flowPane.setAlignment(Pos.CENTER);
             flowPane.setId(String.valueOf(user.getUid()));
 
-            flowPane.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent event) {
-                    FlowPane fp = (FlowPane) event.getSource();
-                    log.debug("点击事件：{}", fp.getUserData());
-                }
+            flowPane.setOnMouseClicked(event -> {
+                FlowPane fp = (FlowPane) event.getSource();
+                log.debug("点击用户头像，该用户信息：{}", fp.getUserData());
+                //刷新用户的相关信息
+                Platform.runLater(new RefreshUserInfoPaneRunnable(vBox, fp.getUserData().toString()));
             });
 
             Platform.runLater(new RefreshUsersPaneRunnable(flowPane, rowIndex, columnIndex, usersPane));
