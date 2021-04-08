@@ -1,6 +1,7 @@
 package game.iquanzi.top.service;
 
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.json.JSONObject;
 import game.iquanzi.top.dict.MessageTypeDict;
 import game.iquanzi.top.dto.LoginDto;
 import game.iquanzi.top.dto.OutDto;
@@ -11,6 +12,7 @@ import org.smartboot.socket.transport.WriteBuffer;
 import java.io.IOException;
 import java.text.MessageFormat;
 
+import static game.iquanzi.top.dict.MessageTypeDict.Req.GAME_FIVE_CHESS_INVITE;
 import static game.iquanzi.top.dict.MessageTypeDict.Req.ONLINE_USERS;
 
 /**
@@ -49,6 +51,17 @@ public class MessageService {
         OutDto<String> out = new OutDto<>();
         out.setD(msg);
         out.setT(MessageTypeDict.Test.TEST);
+        sendMsg2Server(out);
+    }
+
+    /**
+     * 邀请用户开始游戏
+     * @param data peer用户信息
+     */
+    public void inviteUserGame(JSONObject data) {
+        OutDto<Long> out = new OutDto<>();
+        out.setD(data.getJSONObject("user").getLong("uid"));
+        out.setT(GAME_FIVE_CHESS_INVITE);
         sendMsg2Server(out);
     }
 
