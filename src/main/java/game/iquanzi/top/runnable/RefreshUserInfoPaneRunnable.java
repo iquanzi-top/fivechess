@@ -30,6 +30,7 @@ public class RefreshUserInfoPaneRunnable implements Runnable{
         Platform.runLater(() -> {
             JSONObject info = JSONUtil.parseObj(data);
             log.debug("信息：{}", info);
+            vBox.setUserData(data);
             ((TitledPane) vBox.lookup("#peerInfoPane")).setText(info.getJSONObject("user").getStr("nickName"));
             ((Label)vBox.lookup("#totalNums")).setText(info.getStr("totalNums"));
             ((Label)vBox.lookup("#wonNums")).setText(info.getStr("wonNums"));
