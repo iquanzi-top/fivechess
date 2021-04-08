@@ -1,8 +1,8 @@
 package game.iquanzi.top.controller;
 
 import cn.hutool.core.lang.Assert;
-import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONUtil;
 import game.iquanzi.top.service.MessageService;
 import game.iquanzi.top.service.SessionService;
 import javafx.application.Application;
@@ -141,12 +141,8 @@ public class LobbyController extends Application {
 
     public void inviteBtnClick(ActionEvent actionEvent) {
         log.debug("事件：{}", actionEvent.getEventType().getName());
-        if (ObjectUtil.isNotNull(wonNums)) {
-            wonNums.setText("60");
-        } else {
-            log.error("wonNums为空");
-        }
-
-        MessageService.getInstance().sendTestMsg();
+        Scene scene = wonNums.getScene();
+        Object userData = scene.lookup("#peerPane").getUserData();
+        MessageService.getInstance().inviteUserGame(JSONUtil.parseObj(userData));
     }
 }
