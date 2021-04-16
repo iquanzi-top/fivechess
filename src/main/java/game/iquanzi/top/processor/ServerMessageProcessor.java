@@ -2,6 +2,7 @@ package game.iquanzi.top.processor;
 
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
+import game.iquanzi.top.component.ChessDialog;
 import game.iquanzi.top.controller.LobbyController;
 import game.iquanzi.top.dto.LoginResultDto;
 import game.iquanzi.top.dto.OnlineUserResultDto;
@@ -133,23 +134,31 @@ public class ServerMessageProcessor implements MessageProcessor<String> {
                 break;
             case LOGIN_RESP:
                 // 登录成功，本地保存用户信息
-                LoginResultDto d = JSONUtil.toBean(dto.getD().toString(), LoginResultDto.class);
-                log.info("登录结果：{}", JSONUtil.toJsonStr(d));
+                Object respDto = dto.getD();
+                if (null != respDto) {
+                    LoginResultDto d = JSONUtil.toBean(respDto.toString(), LoginResultDto.class);
+                    log.info("登录结果：{}", JSONUtil.toJsonStr(d));
 
-                // 保存到本地
-                UserService.saveUser(d);
+                    // 保存到本地
+                    UserService.saveUser(d);
 
-                // 跳转界面
-                Platform.runLater(() -> {
-                    stage.hide();
-                    LobbyController lobby = new LobbyController();
-                    try {
-                        lobby.showWindow(stage);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        log.error("显示窗口异常{}", e.getMessage());
-                    }
-                });
+                    // 跳转界面
+                    Platform.runLater(() -> {
+                        stage.hide();
+                        LobbyController lobby = new LobbyController();
+                        try {
+                            lobby.showWindow(stage);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            log.error("显示窗口异常{}", e.getMessage());
+                        }
+                    });
+                } else {
+                    log.error("登录失败，稍后重试！");
+                    Platform.runLater(() -> {
+                        ChessDialog.showMessageDialog(stage, "登录失败，请稍后重试！", "失败");
+                    });
+                }
                 break;
             case ONLINE_USERS_RESP:
                 log.debug("在线用户数据：{}", msg);

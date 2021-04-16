@@ -64,7 +64,6 @@ public class LobbyController extends Application {
         ObservableList<Node> childs = root.getChildren();
         childs.forEach(child -> {
             String childId = child.getId();
-            log.debug("一级组件ID：{}", childId);
             if (StrUtil.isNotBlank(childId) && childId.equalsIgnoreCase(ID_PAGING)) {
                 paging = (Pagination)child;
                 paging.setStyle("-fx-padding: 1, 0;");
@@ -84,7 +83,7 @@ public class LobbyController extends Application {
     }
 
     /**
-     * 创建表格
+     * 创建在线用户表格
      * @param pageIndex 页码
      * @return 表格面板
      */

@@ -85,10 +85,11 @@ public class MessageService {
     }
 
     /**
-     * todo 分页获取在线用户
-     * @param page 页吗
+     * 分页获取在线用户
+     * @param page 页码
      */
     public void getOnlineUsers(int page) {
+        log.debug("加载第{}页的在线用户", page);
         OutDto<Integer> out = new OutDto<>();
         out.setD(page);
         out.setT(ONLINE_USERS);
