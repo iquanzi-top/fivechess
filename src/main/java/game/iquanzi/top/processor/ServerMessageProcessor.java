@@ -30,8 +30,7 @@ import org.smartboot.socket.transport.AioSession;
 
 import java.util.List;
 
-import static game.iquanzi.top.dict.MessageTypeDict.Req.CHESS_STEP;
-import static game.iquanzi.top.dict.MessageTypeDict.Req.LOGIN;
+import static game.iquanzi.top.dict.MessageTypeDict.Req.*;
 import static game.iquanzi.top.dict.MessageTypeDict.Resp.LOGIN_RESP;
 import static game.iquanzi.top.dict.MessageTypeDict.Resp.ONLINE_USERS_RESP;
 import static game.iquanzi.top.dict.MessageTypeDict.Test.TEST_RESP;
@@ -131,6 +130,14 @@ public class ServerMessageProcessor implements MessageProcessor<String> {
             case LOGIN:
                 break;
             case CHESS_STEP:
+                break;
+            case GAME_FIVE_CHESS_INVITE:
+                //五子棋游戏邀请
+                //服务端发送给客户端的消息，此消息内，标明游戏邀请发起者、发起时间等信息。
+                //客户端收到该消息后，需弹出提示对话框，用户可选择接受邀请、拒绝邀请，如果在限定时间内，没有响应该消息，那么当做拒绝邀请操作。
+                break;
+            case GAME_CHINESS_CHESS_INVITE:
+                //象棋游戏邀请
                 break;
             case LOGIN_RESP:
                 // 登录成功，本地保存用户信息
