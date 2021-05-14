@@ -3,6 +3,7 @@ package game.iquanzi.top.controller;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
+import game.iquanzi.top.component.ChessDialog;
 import game.iquanzi.top.service.MessageService;
 import game.iquanzi.top.service.SessionService;
 import javafx.application.Application;
@@ -46,6 +47,8 @@ public class LobbyController extends Application {
     @FXML
     private Pagination paging;
 
+    private Stage curStage;
+
     /**
      * 显示窗口
      * @throws Exception 异常
@@ -80,6 +83,8 @@ public class LobbyController extends Application {
             log.debug("监听到程序窗口关闭事件");
             getChessSession().getClient().shutdown();
         });
+
+        curStage = primaryStage;
     }
 
     /**
@@ -142,6 +147,13 @@ public class LobbyController extends Application {
         log.debug("事件：{}", actionEvent.getEventType().getName());
         Scene scene = wonNums.getScene();
         Object userData = scene.lookup("#peerPane").getUserData();
-        MessageService.getInstance().inviteUserGame(JSONUtil.parseObj(userData));
+
+        ChessDialog.Response resp = ChessDialog.showConfirmDialog(curStage, "发送邀请？", "游戏邀请");
+        if (resp == ChessDialog.Response.YES) {
+            log.info("点击了确定按钮");
+            MessageService.getInstance().inviteUserGame(JSONUtil.parseObj(userData));
+        } else if (resp == ChessDialog.Response.NO) {
+            log.info("点击了取消按钮");
+        }
     }
 }

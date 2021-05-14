@@ -128,18 +128,23 @@ public class ServerMessageProcessor implements MessageProcessor<String> {
         int t = dto.getT();
         switch (t) {
             case LOGIN:
+                log.info("用户登录");
                 break;
             case CHESS_STEP:
+                log.info("用户落子");
                 break;
             case GAME_FIVE_CHESS_INVITE:
+                log.info("五子棋邀请");
                 //五子棋游戏邀请
                 //服务端发送给客户端的消息，此消息内，标明游戏邀请发起者、发起时间等信息。
                 //客户端收到该消息后，需弹出提示对话框，用户可选择接受邀请、拒绝邀请，如果在限定时间内，没有响应该消息，那么当做拒绝邀请操作。
                 break;
             case GAME_CHINESS_CHESS_INVITE:
                 //象棋游戏邀请
+                log.info("象棋邀请");
                 break;
             case LOGIN_RESP:
+                log.info("登录结果响应");
                 // 登录成功，本地保存用户信息
                 Object respDto = dto.getD();
                 if (null != respDto) {
@@ -168,7 +173,7 @@ public class ServerMessageProcessor implements MessageProcessor<String> {
                 }
                 break;
             case ONLINE_USERS_RESP:
-                log.debug("在线用户数据：{}", msg);
+                log.info("在线用户数据：{}", msg);
                 OnlineUserResultDto resultDto = JSONUtil.toBean(dto.getD().toString(), OnlineUserResultDto.class);
                 int curPageIndex = resultDto.getCurPageIndex();
                 GridPane pane = (GridPane) (stage.getScene().lookup("#usersPane_" + curPageIndex));
@@ -177,10 +182,10 @@ public class ServerMessageProcessor implements MessageProcessor<String> {
                 showPeersData(resultDto.getUsers(), pane, vBox);
                 break;
             case TEST_RESP:
-                log.debug("收到测试响应消息：{}", msg);
+                log.info("收到测试响应消息：{}", msg);
                 break;
             default:
-                log.debug("不支持的消息");
+                log.info("不支持的消息");
         }
     }
 

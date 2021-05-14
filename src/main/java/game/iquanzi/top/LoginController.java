@@ -105,7 +105,7 @@ public class LoginController extends Application implements Initializable {
             try {
                 //fixme 此处的服务器地址，后期需要进行替换
                 AioQuickClient<String> client = new AioQuickClient<>(
-                        "192.168.18.38",
+                        "192.168.18.8",
                         8080,
                         new StringProtocol(),
                         new ServerMessageProcessor(stage)
