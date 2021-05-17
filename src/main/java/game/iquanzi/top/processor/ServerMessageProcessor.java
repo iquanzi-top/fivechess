@@ -31,8 +31,7 @@ import org.smartboot.socket.transport.AioSession;
 import java.util.List;
 
 import static game.iquanzi.top.dict.MessageTypeDict.Req.*;
-import static game.iquanzi.top.dict.MessageTypeDict.Resp.LOGIN_RESP;
-import static game.iquanzi.top.dict.MessageTypeDict.Resp.ONLINE_USERS_RESP;
+import static game.iquanzi.top.dict.MessageTypeDict.Resp.*;
 import static game.iquanzi.top.dict.MessageTypeDict.Test.TEST_RESP;
 
 /**
@@ -138,6 +137,11 @@ public class ServerMessageProcessor implements MessageProcessor<String> {
                 //五子棋游戏邀请
                 //服务端发送给客户端的消息，此消息内，标明游戏邀请发起者、发起时间等信息。
                 //客户端收到该消息后，需弹出提示对话框，用户可选择接受邀请、拒绝邀请，如果在限定时间内，没有响应该消息，那么当做拒绝邀请操作。
+                UserPojo pojo = JSONUtil.toBean(dto.getD().toString(), UserPojo.class);
+                log.info("游戏邀请人：『{}』", pojo.getUserName());
+                Platform.runLater(() -> {
+                    ChessDialog.showConfirmDialog(stage, pojo.getUserName() + "邀请您进行五子棋游戏", "游戏邀请");
+                });
                 break;
             case GAME_CHINESS_CHESS_INVITE:
                 //象棋游戏邀请
@@ -183,6 +187,12 @@ public class ServerMessageProcessor implements MessageProcessor<String> {
                 break;
             case TEST_RESP:
                 log.info("收到测试响应消息：{}", msg);
+                break;
+            case GAME_FIVE_CHESS_RESP:
+                log.info("五子棋邀请响应");
+                break;
+            case GAME_CHINESS_CHESS_RESP:
+                log.info("象棋邀请响应");
                 break;
             default:
                 log.info("不支持的消息");
