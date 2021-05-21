@@ -49,8 +49,11 @@ public class UserService {
      */
     public static boolean logout() {
         UserPojo userPojo = curUser();
-        userPojo.setToken("");
-        return HibernateUtil.update(userPojo);
+        if (null != userPojo) {
+            userPojo.setToken("");
+            return HibernateUtil.update(userPojo);
+        }
+        return true;
     }
 
     private static UserPojo findUser(int userId) {
