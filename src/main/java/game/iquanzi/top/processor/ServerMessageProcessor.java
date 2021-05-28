@@ -126,6 +126,9 @@ public class ServerMessageProcessor implements MessageProcessor<String> {
         OutDto dto = JSONUtil.toBean(msg, OutDto.class);
         int t = dto.getT();
         switch (t) {
+            case HEART_PONG:
+                log.info("心跳响应消息，{}", msg);
+                break;
             case LOGIN:
                 log.info("用户登录");
                 break;
@@ -140,7 +143,14 @@ public class ServerMessageProcessor implements MessageProcessor<String> {
                 UserPojo pojo = JSONUtil.toBean(dto.getD().toString(), UserPojo.class);
                 log.info("游戏邀请人：『{}』", pojo.getUserName());
                 Platform.runLater(() -> {
-                    ChessDialog.showConfirmDialog(stage, pojo.getUserName() + "邀请您进行五子棋游戏", "游戏邀请");
+                    ChessDialog.Response confirmDialog = ChessDialog.showConfirmDialog(stage, pojo.getUserName() + "邀请您进行五子棋游戏", "游戏邀请");
+                    if (confirmDialog == ChessDialog.Response.YES) {
+                        log.info("同意了游戏邀请");
+                    } else {
+                        log.info("拒绝了游戏邀请");
+                    }
+
+                    //fixme 发送消息到服务器
                 });
                 break;
             case GAME_CHINESS_CHESS_INVITE:

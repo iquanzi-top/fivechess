@@ -25,6 +25,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.StrokeType;
 import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
+import org.smartboot.socket.transport.AioQuickClient;
 import org.smartboot.socket.transport.WriteBuffer;
 
 import java.io.IOException;
@@ -132,7 +133,11 @@ public class MainController extends Application {
 
         primaryStage.setOnCloseRequest(event -> {
             log.debug("监听到程序窗口关闭事件");
-            getChessSession().getClient().shutdown();
+            AioQuickClient<String> client = getChessSession().getClient();
+            if (null != client) {
+                client.shutdown();
+            }
+            System.exit(0);
         });
     }
 

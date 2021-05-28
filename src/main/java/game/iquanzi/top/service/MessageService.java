@@ -12,8 +12,7 @@ import org.smartboot.socket.transport.WriteBuffer;
 import java.io.IOException;
 import java.text.MessageFormat;
 
-import static game.iquanzi.top.dict.MessageTypeDict.Req.GAME_FIVE_CHESS_INVITE;
-import static game.iquanzi.top.dict.MessageTypeDict.Req.ONLINE_USERS;
+import static game.iquanzi.top.dict.MessageTypeDict.Req.*;
 
 /**
  * 向服务器发送消息的服务<br/>
@@ -41,6 +40,16 @@ public class MessageService {
 
     public static MessageService getInstance() {
         return MessageServiceHolder.instance;
+    }
+
+    /**
+     * 向服务其发送心跳消息
+     */
+    public void sendHeartMsg() {
+        OutDto<String> out = new OutDto<>();
+        out.setT(HEART_PING);
+        out.setD("ping");
+        sendMsg2Server(out);
     }
 
     /**

@@ -22,6 +22,7 @@ import javafx.scene.control.Pagination;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
+import org.smartboot.socket.transport.AioQuickClient;
 
 import java.net.URL;
 
@@ -81,7 +82,11 @@ public class LobbyController extends Application {
 
         primaryStage.setOnCloseRequest(event -> {
             log.debug("监听到程序窗口关闭事件");
-            getChessSession().getClient().shutdown();
+            AioQuickClient<String> client = getChessSession().getClient();
+            if (null != client) {
+                client.shutdown();
+            }
+            System.exit(0);
         });
 
         curStage = primaryStage;

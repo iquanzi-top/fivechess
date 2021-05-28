@@ -6,6 +6,7 @@ import game.iquanzi.top.processor.ServerMessageProcessor;
 import game.iquanzi.top.protocol.StringProtocol;
 import game.iquanzi.top.service.MessageService;
 import game.iquanzi.top.service.SessionService;
+import game.iquanzi.top.task.HeartBeatTask;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -16,6 +17,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import lombok.extern.slf4j.Slf4j;
 import org.smartboot.socket.transport.AioQuickClient;
 import org.smartboot.socket.transport.AioSession;
@@ -23,6 +25,7 @@ import org.smartboot.socket.transport.AioSession;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.concurrent.Executors;
 
 /**
  * 登录控制器<br/>
@@ -88,10 +91,24 @@ public class LoginController extends Application implements Initializable {
 
         primaryStage.setOnCloseRequest(event -> {
             log.debug("监听到程序窗口关闭事件");
-            getChessSession().getClient().shutdown();
+            AioQuickClient<String> client = getChessSession().getClient();
+            if (null != client) {
+                client.shutdown();
+            }
+            System.exit(0);
         });
 
         connServer(primaryStage);
+        startTasks();
+    }
+
+    private void startTasks() {
+        HeartBeatTask heartBeatTask = new HeartBeatTask();
+
+        heartBeatTask.setExecutor(Executors.newFixedThreadPool(1));
+        heartBeatTask.setDelay(Duration.seconds(10));
+        heartBeatTask.setPeriod(Duration.seconds(30));
+        heartBeatTask.start();
     }
 
     /**
