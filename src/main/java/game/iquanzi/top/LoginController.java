@@ -1,6 +1,7 @@
 package game.iquanzi.top;
 
 import cn.hutool.core.lang.Assert;
+import cn.hutool.core.thread.ThreadFactoryBuilder;
 import cn.hutool.crypto.SecureUtil;
 import game.iquanzi.top.processor.ServerMessageProcessor;
 import game.iquanzi.top.protocol.StringProtocol;
@@ -25,7 +26,7 @@ import org.smartboot.socket.transport.AioSession;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 
 /**
  * 登录控制器<br/>
@@ -39,7 +40,7 @@ public class LoginController extends Application implements Initializable {
     /**
      * 与服务器连接失败后尝试次数
      */
-    private int test_time = 5;
+    private int testTime = 5;
     @FXML
     private TextField username;
     @FXML
@@ -102,11 +103,23 @@ public class LoginController extends Application implements Initializable {
         startTasks();
     }
 
+    /**
+     * 启动心跳任务
+     */
     private void startTasks() {
         HeartBeatTask heartBeatTask = new HeartBeatTask();
-
-        heartBeatTask.setExecutor(Executors.newFixedThreadPool(1));
-        heartBeatTask.setDelay(Duration.seconds(10));
+        ThreadFactory factory = new ThreadFactoryBuilder().setNamePrefix("thread-heart-").build();
+        ExecutorService executorService = new ThreadPoolExecutor(
+                1,
+                1,
+                200L,
+                TimeUnit.MILLISECONDS,
+                new LinkedBlockingDeque<>(),
+                factory,
+                new ThreadPoolExecutor.AbortPolicy()
+        );
+        heartBeatTask.setExecutor(executorService);
+        heartBeatTask.setDelay(Duration.seconds(5));
         heartBeatTask.setPeriod(Duration.seconds(30));
         heartBeatTask.start();
     }
@@ -116,8 +129,8 @@ public class LoginController extends Application implements Initializable {
      * @param stage 场景对象
      */
     private void connServer(Stage stage) {
-        if (test_time > 0) {
-            test_time--;
+        if (testTime > 0) {
+            testTime--;
             log.debug("-----连接服务器-----");
             try {
                 //fixme 此处的服务器地址，后期需要进行替换
@@ -133,7 +146,7 @@ public class LoginController extends Application implements Initializable {
                 getChessSession().setClient(client);
                 getChessSession().setSession(session);
 
-                test_time = 5;
+                testTime = 5;
             } catch (IOException e) {
                 log.error("服务器连接失败，5秒钟后自动重连", e);
 
