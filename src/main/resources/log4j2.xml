@@ -39,8 +39,8 @@
             filePattern：满足条件后，日志输出保存的文件路径和名称。
             (eg: 2017-04/search-2017-04-17-1.log)
         -->
-        <RollingFile name="RollingFileInfo" fileName="${LOG_HOME}/javafx.log"
-                     filePattern="${LOG_HOME}/$${date:yyyy-MM}/javafx_%d{yyyy-MM-dd}-%i.log">
+        <RollingFile name="RollingFileInfo" fileName="${LOG_HOME}/fc.log"
+                     filePattern="${LOG_HOME}/$${date:yyyy-MM}/fc_%d{yyyy-MM-dd}-%i.log">
             <ThresholdFilter level="INFO" onMatch="ACCEPT" onMismatch="DENY" />
             <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %logger{36}:%L [%t] - %msg%n" />
             <!-- Policies定义相关策略：-->
@@ -71,8 +71,8 @@
             -->
             <DefaultRolloverStrategy max="100" />
         </RollingFile>
-        <RollingFile name="RollingFileError" fileName="${ERROR_LOG_FILE_NAME}/javafx_error.log"
-                     filePattern="${ERROR_LOG_FILE_NAME}/$${date:yyyy-MM}/javafx_error-%d{yyyy-MM-dd}.log">
+        <RollingFile name="RollingFileError" fileName="${ERROR_LOG_FILE_NAME}/fc_error.log"
+                     filePattern="${ERROR_LOG_FILE_NAME}/$${date:yyyy-MM}/fc_error-%d{yyyy-MM-dd}.log">
             <ThresholdFilter level="ERROR" onMatch="ACCEPT" onMismatch="DENY" />
             <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %logger{36}:%L [%t] - %msg%n" />
             <Policies>

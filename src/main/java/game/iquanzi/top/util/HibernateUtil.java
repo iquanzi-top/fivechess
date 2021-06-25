@@ -7,7 +7,9 @@ import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.query.Query;
 
+import java.util.Enumeration;
 import java.util.List;
+import java.util.Properties;
 
 /**
  * Hibernate工具类<br/>
@@ -28,6 +30,13 @@ public class HibernateUtil {
         try {
             // 读取配置文件
             Configuration cfg = new Configuration().configure("hibernate.cfg.xml");
+            Properties properties = cfg.getProperties();
+            Enumeration<?> keys = properties.propertyNames();
+            while (keys.hasMoreElements()) {
+                String k = keys.nextElement().toString();
+                String v = properties.getProperty(k);
+                log.warn("hibernate配置k:[{}],v:[{}]", k, v);
+            }
             // 实例化服务登记
             // StandardServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder().applySettings(cfg.getProperties()).build();
             // 获取会话工厂

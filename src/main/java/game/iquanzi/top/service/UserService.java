@@ -62,6 +62,7 @@ public class UserService {
         list.forEach(p -> {
             log.debug("用户信息：{}", p.toString());
         });
+        log.warn("查找到匹配的用户数：{}", list.size());
         return CollectionUtil.isEmpty(list) ? null : list.get(0);
     }
 

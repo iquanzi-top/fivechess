@@ -8,7 +8,7 @@
         <!-- 数据库驱动 -->
         <property name="hibernate.connection.driver_class">org.sqlite.JDBC</property>
         <!-- 数据库连接URL -->
-        <property name="hibernate.connection.url">jdbc:sqlite::resource:fivechess.db</property>
+        <property name="hibernate.connection.url">jdbc:sqlite:/tmp/fivechess.db</property>
         <!-- 格式化SQL -->
         <property name="hibernate.format_sql">true</property>
         <!-- 显示SQL -->
