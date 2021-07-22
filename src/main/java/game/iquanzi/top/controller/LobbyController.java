@@ -148,6 +148,10 @@ public class LobbyController extends Application {
         return chessSession;
     }
 
+    /**
+     * 邀请游戏按钮点击事件
+     * @param actionEvent 事件对象
+     */
     public void inviteBtnClick(ActionEvent actionEvent) {
         log.debug("事件：{}", actionEvent.getEventType().getName());
         Scene scene = wonNums.getScene();
@@ -160,5 +164,14 @@ public class LobbyController extends Application {
         } else if (resp == ChessDialog.Response.NO) {
             log.info("点击了取消按钮");
         }
+    }
+
+    /**
+     * 个人中心按钮点击事件
+     * @param actionEvent 事件对象
+     */
+    public void selfBtnClick(ActionEvent actionEvent) {
+        log.debug("点击了【{}】按钮", "个人中心");
+        //todo 需要进行页面调转
     }
 }
