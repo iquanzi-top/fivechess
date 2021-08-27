@@ -3,6 +3,7 @@ package game.iquanzi.top.service;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.json.JSONObject;
 import game.iquanzi.top.dict.MessageTypeDict;
+import game.iquanzi.top.dto.GameInviteResultDto;
 import game.iquanzi.top.dto.LoginDto;
 import game.iquanzi.top.dto.OutDto;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +14,7 @@ import java.io.IOException;
 import java.text.MessageFormat;
 
 import static game.iquanzi.top.dict.MessageTypeDict.Req.*;
+import static game.iquanzi.top.dict.MessageTypeDict.Resp.GAME_FIVE_CHESS_RESP;
 
 /**
  * 向服务器发送消息的服务<br/>
@@ -38,8 +40,31 @@ public class MessageService {
         private static MessageService instance = new MessageService();
     }
 
+    /**
+     * 获取实例
+     * @return 实例对象
+     */
     public static MessageService getInstance() {
         return MessageServiceHolder.instance;
+    }
+
+    /**
+     * 被邀请者向服务器发送游戏邀请的回应消息
+     * @param accept ture：接受邀请；false：拒绝邀请
+     * @param pid 邀请人ID
+     * @param uid 被邀请人ID
+     */
+    public void sendInviteResult(boolean accept, int pid, int uid) {
+        GameInviteResultDto result = new GameInviteResultDto();
+        result.setPid(pid);
+        result.setUid(uid);
+        result.setR(accept);
+
+        OutDto<GameInviteResultDto> out = new OutDto<>();
+        out.setT(GAME_FIVE_CHESS_RESP);
+        out.setD(result);
+
+        sendMsg2Server(out);
     }
 
     /**
@@ -125,7 +150,7 @@ public class MessageService {
                 log.debug("连接会话失效");
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("发送消息失败", e);
         }
     }
 }
