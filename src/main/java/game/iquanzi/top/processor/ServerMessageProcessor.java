@@ -11,6 +11,7 @@ import game.iquanzi.top.pojo.OnlineUserPojo;
 import game.iquanzi.top.pojo.UserPojo;
 import game.iquanzi.top.runnable.RefreshUserInfoPaneRunnable;
 import game.iquanzi.top.runnable.RefreshUsersPaneRunnable;
+import game.iquanzi.top.service.MessageService;
 import game.iquanzi.top.service.UserService;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -126,6 +127,9 @@ public class ServerMessageProcessor implements MessageProcessor<String> {
         OutDto dto = JSONUtil.toBean(msg, OutDto.class);
         int t = dto.getT();
         switch (t) {
+            case DEFAULT_RESP:
+                log.info("默认响应消息，{}", msg);
+                break;
             case HEART_PONG:
                 log.info("心跳响应消息，{}", msg);
                 break;
@@ -143,14 +147,17 @@ public class ServerMessageProcessor implements MessageProcessor<String> {
                 UserPojo pojo = JSONUtil.toBean(dto.getD().toString(), UserPojo.class);
                 log.info("游戏邀请人：『{}』", pojo.getUserName());
                 Platform.runLater(() -> {
+                    boolean accept = false;
                     ChessDialog.Response confirmDialog = ChessDialog.showConfirmDialog(stage, pojo.getUserName() + "邀请您进行五子棋游戏", "游戏邀请");
                     if (confirmDialog == ChessDialog.Response.YES) {
+                        accept = true;
                         log.info("同意了游戏邀请");
                     } else {
+                        accept = false;
                         log.info("拒绝了游戏邀请");
                     }
-
-                    //fixme 发送消息到服务器
+                    //fixme 发送消息到服务器，需要包含结果、邀请人信息、
+                    MessageService.getInstance().sendInviteResult(accept, pojo.getUid(), -1);
                 });
                 break;
             case GAME_CHINESS_CHESS_INVITE:
