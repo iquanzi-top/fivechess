@@ -11,7 +11,7 @@ import java.text.MessageFormat;
  * SQLite工具类<br/>
  * @author Mr.Z
  * @version 1.0
- * @createDate 2020/12/4
+ * @date 2020/12/4
  * @since JDK 1.8
  */
 public class SQLiteUtil {
