@@ -171,7 +171,16 @@ public class LobbyController extends Application {
      * @param actionEvent 事件对象
      */
     public void selfBtnClick(ActionEvent actionEvent) {
-        log.debug("点击了【{}】按钮", "个人中心");
-        //todo 需要进行页面调转
+        // 跳转界面
+        Platform.runLater(() -> {
+            PersonalCenterController center = new PersonalCenterController();
+            try {
+                //新窗口打开
+                center.showWindow(new Stage());
+            } catch (Exception e) {
+                e.printStackTrace();
+                log.error("显示窗口异常{}", e.getMessage());
+            }
+        });
     }
 }
